@@ -1,4 +1,4 @@
 module.exports = {
-    ...require("genderSort"),
-    ...require("filesUpToDirectory")
+    ...require("./sortFilesJSON"),
+    ...require("./upToDirectory")
 };

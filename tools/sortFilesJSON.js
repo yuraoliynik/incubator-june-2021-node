@@ -2,26 +2,26 @@ const fs = require("fs");
 const path = require("path");
 
 
-const genderSort = (xGenderPath, yGenderValue, yGenderPath) => {
-    fs.readdir(xGenderPath, (err, files) => {
+const sortFilesJSON = (xPath, xPropertyName, xPropertyValue, yPath) => {
+    fs.readdir(xPath, (err, files) => {
         if (err) {
             console.log(err);
             return;
         }
 
         files.forEach(fileName => {
-            fs.readFile(path.join(xGenderPath, fileName), (err, fileData) => {
+            fs.readFile(path.join(xPath, fileName), (err, fileData) => {
                 if (err) {
                     console.log(err);
                     return;
                 }
 
-                const genderObj = JSON.parse(fileData);
+                const genderObj = JSON.parse(fileData.toString());
 
-                if (genderObj.gender === yGenderValue) {
+                if (genderObj[xPropertyName] !== xPropertyValue) {
                     fs.rename(
-                        path.join(xGenderPath, fileName),
-                        path.join(yGenderPath, fileName),
+                        path.join(xPath, fileName),
+                        path.join(yPath, fileName),
 
                         (err) => {
                             if (err) {
@@ -40,5 +40,5 @@ const genderSort = (xGenderPath, yGenderValue, yGenderPath) => {
 
 
 module.exports = {
-    genderSort
+    sortFilesJSON
 };
