@@ -1,10 +1,10 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 
 const fileMove = (fileName, fileDirPath, moveDirPath) => {
     if (fileDirPath === moveDirPath) {
-        console.log(`***  File "${fileName}" not moved. It is already here`);
+        console.log(`***  File '${fileName}' not moved. It is already here`);
         return;
     }
 
@@ -18,7 +18,7 @@ const fileMove = (fileName, fileDirPath, moveDirPath) => {
                 return;
             }
 
-            console.log(`***  File "${fileName}" was moved`);
+            console.log(`***  File '${fileName}' was moved`);
         }
     );
 };
@@ -56,7 +56,7 @@ const filesUpTo = (upPath, scanPath) => {
             return;
         }
 
-        if (elements.length === 0) {
+        if (!elements.length) {
             return;
         }
 
@@ -69,13 +69,15 @@ const filesUpTo = (upPath, scanPath) => {
                     return;
                 }
 
-                if (stats.isFile() === true) {
+                if (stats.isFile()) {
                     if (scanPath !== upPath) {
                         fileMove(element, scanPath, upPath);
                     }
-                } else {
-                    filesUpTo(upPath, elementPath);
+
+                    return;
                 }
+
+                filesUpTo(upPath, elementPath);
             });
         });
     });
