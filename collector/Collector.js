@@ -17,7 +17,7 @@ function Collector(dirName, dirPath) {
                         return;
                     }
 
-                    console.log(`*****  User file '${objFileName}.txt' was created in ${this.dirName}`)
+                    console.log(`*****  User file '${objFileName}.txt' was created in '${this.dirName}'`)
                 }
             );
         }
