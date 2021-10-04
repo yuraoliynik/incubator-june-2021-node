@@ -7,7 +7,7 @@ function Collector(dirName, dirPath) {
 
     this.collect = (objForCollect, objFileName, cb = () => {}) => {
         if (cb()) {
-            fs.appendFile(
+            fs.writeFile(
                 path.join(this.dirPath, this.dirName, `${objFileName}.txt`),
                 JSON.stringify(objForCollect),
                 (err) => {
