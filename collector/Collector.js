@@ -31,18 +31,11 @@ function Collector(dirName, dirPath) {
     }
 
     if (!fs.existsSync(path.join(this.dirPath, this.dirName))) {
-        fs.mkdir(
-            path.join(this.dirPath, this.dirName),
-            (err) => {
-
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                console.log(`***  Directory '${this.dirName}' was created or/and cleaned`);
-            }
+        fs.mkdirSync(
+            path.join(this.dirPath, this.dirName)
         );
+
+        console.log(`***  Directory '${this.dirName}' was created or/and cleaned`);
     }
 }
 
