@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-
 const dbPath = path.join(__dirname, 'usersDB.json');
 
 const readData = () => {
@@ -24,14 +23,13 @@ const readData = () => {
 const writeData = (userNextId, usersData) => {
     fs.writeFile(
         dbPath,
-        JSON.stringify({userNextId: userNextId, usersData: usersData}),
+        JSON.stringify({userNextId, usersData}),
 
         (err) => {
             if (err) throw err;
         }
     )
 };
-
 
 module.exports = {
     readData,

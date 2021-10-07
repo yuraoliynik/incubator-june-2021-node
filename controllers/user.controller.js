@@ -1,6 +1,5 @@
 const userTool = require('../tools/user.tool');
 
-
 module.exports = {
     getUsers: async (req, res) => {
         res.json(await userTool.getUsers());

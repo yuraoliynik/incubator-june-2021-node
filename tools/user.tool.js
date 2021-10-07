@@ -1,6 +1,5 @@
 const db = require('../dataBase/dataBase');
 
-
 const getUsers = async (userId = 0) => {
     const {userNextId, usersData} = await db.readData();
 
@@ -14,7 +13,7 @@ const getUsers = async (userId = 0) => {
         return `Not exists user - id: ${userId}`;
     }
 
-    return {...usersData.find(item => item.id === Number(userId))};
+    return {...userObj};
 };
 
 const insertUser = async (userData) => {
@@ -34,7 +33,7 @@ const updateUser = async (userId, userData) => {
         return `Not find user - id: ${userId}`;
     }
 
-    usersData[userIndex] = {...userData, id: usersData[userIndex].id};
+    usersData[userIndex] = {...usersData[userIndex], ...userData, id: usersData[userIndex].id};
 
     db.writeData(userNextId, usersData);
 
@@ -54,7 +53,6 @@ const deleteUser = async (userId) => {
 
     return `Deleted user - id: ${userId}`;
 };
-
 
 module.exports = {
     getUsers,
