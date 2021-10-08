@@ -49,7 +49,7 @@ module.exports = {
         try {
             const deletedUser = await User.findByIdAndDelete(userId);
 
-            res.json({'User was deleted': deletedUser});
+            res.json(deletedUser);
 
         } catch (err) {
             res.json(err.message);
