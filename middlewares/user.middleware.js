@@ -18,65 +18,34 @@ module.exports = {
         }
     },
 
-    getUserById: async (req, res, next) => {
+    createUser: async (req, res, next) => {
         try {
-            const foundUser = await User.findById(req.params.userId);
+            const {body: {email}} = req;
+
+            const userEmail = await User.findOne({email});
+
+            if (userEmail) {
+                throw new Error(`User whit email: ${email} exists`);
+            }
+
+            next();
+
+        } catch (err) {
+            res.json(err.message);
+        }
+    },
+
+    userExists: async (req, res, next) => {
+        try {
+            const {params: {userId}} = req;
+
+            const foundUser = await User.findById(userId);
 
             if (!foundUser) {
-                throw new Error(`User id: ${req.params.userId} is not exist`);
+                throw new Error(`User id: ${userId} is not exist`);
             }
 
             req.foundUser = foundUser;
-
-            next();
-
-        } catch (err) {
-            res.json(err.message);
-        }
-    },
-
-    createUser: async (req, res, next) => {
-        try {
-            const userEmail = await User.findOne({email: req.body.email});
-
-            if (userEmail) {
-                throw new Error(`User whit email: ${req.body.email} exists`);
-            }
-
-            req.createdUser = await User.create(req.body);
-
-            next();
-
-        } catch (err) {
-            res.json(err.message);
-        }
-    },
-
-    updateUser: async (req, res, next) => {
-        try {
-            const updatedUser = await User.findByIdAndUpdate(
-                req.params.userId,
-                req.body
-            );
-
-            if (!updatedUser) {
-                throw new Error(`User whit id: ${req.params.userId} is not exist`);
-            }
-
-            next();
-
-        } catch (err) {
-            res.json(err.message);
-        }
-    },
-
-    deleteUser: async (req, res, next) => {
-        try {
-            const deletedUser = await User.findByIdAndDelete(req.params.userId);
-
-            if (!deletedUser) {
-                throw new Error(`User whit id: ${req.params.userId} is not exist`);
-            }
 
             next();
 

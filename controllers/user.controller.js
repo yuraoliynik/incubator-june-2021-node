@@ -1,36 +1,42 @@
 const User = require('../models/User');
 
 module.exports = {
-    getUsers: (req, res) => {
+    getUsers: ({foundUsers}, res) => {
         try {
-            res.json(req.foundUsers);
+            res.json(foundUsers);
 
         } catch (err) {
             res.json(err.message);
         }
     },
 
-    getUserById: (req, res) => {
+    getUserById: ({foundUser}, res) => {
         try {
-            res.json(req.foundUser);
+            res.json(foundUser);
 
         } catch (err) {
             res.json(err.message);
         }
     },
 
-    createUser: (req, res) => {
+    createUser: async ({body}, res) => {
         try {
-            res.json(req.createdUser);
+            const createdUser = await User.create(body);
+
+            res.json(createdUser);
 
         } catch (err) {
             res.json(err.message);
         }
     },
 
-    updateUser: async (req, res) => {
+    updateUser: async ({body, params: {userId}}, res) => {
         try {
-            const updatedUser = await User.findById(req.params.userId);
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                body,
+                {new: true, runValidators: true}
+            );
 
             res.json(updatedUser);
 
@@ -39,9 +45,11 @@ module.exports = {
         }
     },
 
-    deleteUser: (req, res) => {
+    deleteUser: async ({params: {userId}}, res) => {
         try {
-            res.json(`User with id: ${req.params.userId} was deleted`);
+            const deletedUser = await User.findByIdAndDelete(userId);
+
+            res.json({'User was deleted': deletedUser});
 
         } catch (err) {
             res.json(err.message);
