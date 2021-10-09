@@ -1,23 +1,6 @@
 const User = require('../models/User');
 
 module.exports = {
-    getUsers: async (req, res, next) => {
-        try {
-            const foundUsers = await User.find({});
-
-            if (!foundUsers.length) {
-                throw new Error('No registered users');
-            }
-
-            req.foundUsers = foundUsers;
-
-            next();
-
-        } catch (err) {
-            res.json(err.message);
-        }
-    },
-
     createUser: async (req, res, next) => {
         try {
             const {body: {email}} = req;
@@ -29,7 +12,6 @@ module.exports = {
             }
 
             next();
-
         } catch (err) {
             res.json(err.message);
         }
@@ -44,11 +26,9 @@ module.exports = {
             if (!foundUser) {
                 throw new Error(`User id: ${userId} is not exist`);
             }
-
             req.foundUser = foundUser;
 
             next();
-
         } catch (err) {
             res.json(err.message);
         }
