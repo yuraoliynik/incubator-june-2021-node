@@ -8,6 +8,7 @@ const userSchema = new Schema({
         required: true,
         trim: true
     },
+
     email: {
         type: String,
         required: true,
@@ -15,11 +16,14 @@ const userSchema = new Schema({
         trim: true,
         lowercase: true
     },
+
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: 8,
+        select: false
     },
+
     role: {
         type: String,
         default: userRoles.USER,

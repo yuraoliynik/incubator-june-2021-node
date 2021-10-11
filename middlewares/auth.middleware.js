@@ -1,19 +1,19 @@
 const User = require('../models/User');
 
+const passwordService = require('../services/password.service');
+
 module.exports = {
     login: async (req, res, next) => {
         try {
             const {body: {email, password}} = req;
 
-            const foundUser = await User.findOne({email});
+            const foundUser = await User.findOne({email}).select('+password');
 
             if (!foundUser) {
                 throw new Error(`User with email: ${email} do not exists`);
             }
 
-            if (password !== foundUser.password) {
-                throw new Error('Bad!!!!!');
-            }
+            await passwordService.compare(password, foundUser.password);
 
             next();
         } catch (err) {
