@@ -1,5 +1,4 @@
 const User = require('../models/User');
-
 const passwordService = require('../services/password.service');
 const userUtil = require('../util/user.util');
 
@@ -26,15 +25,13 @@ module.exports = {
 
     createUser: async (req, res) => {
         try {
-            const {validatedUser, validatedUser: {password}} = req;
+            const {body, body: {password}} = req;
 
             const hashedPassword = await passwordService.hash(password);
 
-            const createdUser = await User.create({...validatedUser, password: hashedPassword});
+            const createdUser = await User.create({...body, password: hashedPassword});
 
-            const foundUser = await User.findById(createdUser._id).lean();
-
-            const normUser = userUtil.userNormalizator(foundUser);
+            const normUser = userUtil.userNormalizator(createdUser.toObject());
 
             res.json(normUser);
         } catch (err) {
@@ -50,11 +47,9 @@ module.exports = {
                 userId,
                 body,
                 {new: true, runValidators: true}
-            ).lean();
+            );
 
-            const normUser = userUtil.userNormalizator(updatedUser);
-
-            res.json(normUser);
+            res.json(updatedUser);
         } catch (err) {
             res.json(err.message);
         }
@@ -64,11 +59,9 @@ module.exports = {
         try {
             const {params: {userId}} = req;
 
-            const deletedUser = await User.findByIdAndDelete(userId).lean();
+            const deletedUser = await User.findByIdAndDelete(userId).select('-password');
 
-            const normUser = userUtil.userNormalizator(deletedUser);
-
-            res.json(normUser);
+            res.json(deletedUser);
         } catch (err) {
             res.json(err.message);
         }

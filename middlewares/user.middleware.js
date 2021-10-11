@@ -1,14 +1,25 @@
 const User = require('../models/User');
-
 const userValidator = require('../validators/user.validator');
-const userUtil = require('../util/user.util');
+const userPutValidator = require('../validators/userPut.validator');
 
 module.exports = {
     isUserValid: async (req, res, next) => {
         try {
             const {body} = req;
 
-            req.validatedUser = await userValidator.validateAsync(body);
+            await userValidator.validateAsync(body);
+
+            next();
+        } catch (err) {
+            res.json(err.message);
+        }
+    },
+
+    isUserPutValid: async (req, res, next) => {
+        try {
+            const {body} = req;
+
+            await userPutValidator.validateAsync(body);
 
             next();
         } catch (err) {
@@ -20,15 +31,13 @@ module.exports = {
         try {
             const {params: {userId}} = req;
 
-            const foundUser = await User.findById(userId).lean();
+            const foundUser = await User.findById(userId);
 
             if (!foundUser) {
                 throw new Error(`User with id: ${userId} already exists`);
             }
 
-            const normUser = userUtil.userNormalizator(foundUser);
-
-            req.foundUser = normUser;
+            req.foundUser = foundUser;
 
             next();
         } catch (err) {
@@ -36,11 +45,11 @@ module.exports = {
         }
     },
 
-    createUser: async (req, res, next) => {
+    isUserEmailExist: async (req, res, next) => {
         try {
-            const {validatedUser: {email}} = req;
+            const {body: {email}} = req;
 
-            const userEmail = await User.findOne({email}).lean();
+            const userEmail = await User.findOne({email});
 
             if (userEmail) {
                 throw new Error(`User whit email: ${email} exists`);

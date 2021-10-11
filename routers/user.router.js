@@ -10,7 +10,7 @@ router.get(
 router.post(
     '/',
     userMiddleware.isUserValid,
-    userMiddleware.createUser,
+    userMiddleware.isUserEmailExist,
     userController.createUser
 );
 
@@ -21,7 +21,7 @@ router.get(
 );
 router.put(
     '/:userId',
-    // userMiddleware.isUserValid,
+    userMiddleware.isUserPutValid,
     userMiddleware.isUserExist,
     userController.updateUser
 );

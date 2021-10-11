@@ -1,19 +1,35 @@
 const User = require('../models/User');
-
-const passwordService = require('../services/password.service');
+const authValidator = require('../validators/auth.validator');
 
 module.exports = {
-    login: async (req, res, next) => {
+    isAuthValid: (req, res, next) => {
         try {
-            const {body: {email, password}} = req;
+            const {body} = req;
+
+            // eslint-disable-next-line no-unused-vars
+            const {error, value} = authValidator.validate(body);
+
+            if (error) {
+                throw new Error('Wrong email or password!!!');
+            }
+
+            next();
+        } catch (err) {
+            res.json(err.message);
+        }
+    },
+
+    isEmailExist: async (req, res, next) => {
+        try {
+            const {body: {email}} = req;
 
             const foundUser = await User.findOne({email}).select('+password');
 
             if (!foundUser) {
-                throw new Error(`User with email: ${email} do not exists`);
+                throw new Error('Wrong email or password!!!');
             }
 
-            await passwordService.compare(password, foundUser.password);
+            req.foundUser = foundUser;
 
             next();
         } catch (err) {
