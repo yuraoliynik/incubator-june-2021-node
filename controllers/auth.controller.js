@@ -3,7 +3,7 @@ const passwordService = require('../services/password.service');
 module.exports = {
     login: async (req, res) => {
         try {
-            const {foundUser, body} = req;
+            const {body, foundUser} = req;
 
             await passwordService.compare(body.password, foundUser.password);
 

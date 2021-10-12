@@ -6,8 +6,7 @@ module.exports = {
         try {
             const {body} = req;
 
-            // eslint-disable-next-line no-unused-vars
-            const {error, value} = authValidator.validate(body);
+            const {error} = authValidator.validate(body);
 
             if (error) {
                 throw new Error('Wrong email or password!!!');

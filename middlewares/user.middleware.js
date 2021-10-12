@@ -34,7 +34,7 @@ module.exports = {
             const foundUser = await User.findById(userId);
 
             if (!foundUser) {
-                throw new Error(`User with id: ${userId} already exists`);
+                throw new Error(`User with id: ${userId} doesn't exist`);
             }
 
             req.foundUser = foundUser;
