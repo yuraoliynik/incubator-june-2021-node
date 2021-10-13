@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
-const regexp = require('../constants/regexp');
-const userRoles = require('../constants/user-roles.enum');
+const {regexp} = require('../constants');
+const {userRoles} = require('../constants');
 
 const userValidator = Joi.object({
     name: Joi.string()

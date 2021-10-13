@@ -3,27 +3,27 @@ const passwordService = require('../services/password.service');
 const userUtil = require('../util/user.util');
 
 module.exports = {
-    getUsers: async (req, res) => {
+    getUsers: async (req, res, next) => {
         try {
             const foundUsers = await User.find({});
 
             res.json(foundUsers);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    getUserById: (req, res) => {
+    getUserById: (req, res, next) => {
         try {
             const {foundUser} = req;
 
             res.json(foundUser);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    createUser: async (req, res) => {
+    createUser: async (req, res, next) => {
         try {
             const {body, body: {password}} = req;
 
@@ -31,15 +31,15 @@ module.exports = {
 
             const createdUser = await User.create({...body, password: hashedPassword});
 
-            const normUser = userUtil.userNormalizator(createdUser.toObject());
+            const normedUser = userUtil.userNormalizator(createdUser.toObject());
 
-            res.json(normUser);
+            res.json(normedUser);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    updateUser: async (req, res) => {
+    updateUser: async (req, res, next) => {
         try {
             const {params: {userId}, body} = req;
 
@@ -51,11 +51,11 @@ module.exports = {
 
             res.json(updatedUser);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    deleteUser: async (req, res) => {
+    deleteUser: async (req, res, next) => {
         try {
             const {params: {userId}} = req;
 
@@ -63,7 +63,7 @@ module.exports = {
 
             res.json(deletedUser);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     }
 };

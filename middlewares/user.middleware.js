@@ -1,29 +1,46 @@
 const User = require('../models/User');
-const userValidator = require('../validators/user.validator');
-const userPutValidator = require('../validators/userPut.validator');
+const {userPutValidator, userValidator} = require('../validators');
 
 module.exports = {
-    isUserValid: async (req, res, next) => {
+    isUserValid: (req, res, next) => {
         try {
             const {body} = req;
 
-            await userValidator.validateAsync(body);
+            const {error} = userValidator.validate(body);
+
+            if (error) {
+                next({
+                    message: error.details[0].message,
+                    status: 400
+                });
+
+                return;
+            }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
-    isUserPutValid: async (req, res, next) => {
+    isUserPutValid: (req, res, next) => {
         try {
             const {body} = req;
 
-            await userPutValidator.validateAsync(body);
+            const {error} = userPutValidator.validateAsync(body);
+
+            if (error) {
+                next({
+                    message: error.details[0].message,
+                    status: 400
+                });
+
+                return;
+            }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
@@ -34,14 +51,19 @@ module.exports = {
             const foundUser = await User.findById(userId);
 
             if (!foundUser) {
-                throw new Error(`User with id: ${userId} doesn't exist`);
+                next({
+                    message: `User with id: ${userId} doesn't exist`,
+                    status: 400
+                });
+
+                return;
             }
 
             req.foundUser = foundUser;
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
@@ -52,12 +74,17 @@ module.exports = {
             const userEmail = await User.findOne({email});
 
             if (userEmail) {
-                throw new Error(`User whit email: ${email} exists`);
+                next({
+                    message: `User whit email: ${email} exists`,
+                    status: 400
+                });
+
+                return;
             }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     }
 };

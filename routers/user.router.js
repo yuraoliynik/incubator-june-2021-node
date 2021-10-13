@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
-const userMiddleware = require('../middlewares/user.middleware');
-const userController = require('../controllers/user.controller');
+const {userMiddleware} = require('../middlewares');
+const {userController} = require('../controllers');
 
 router.get(
     '/',

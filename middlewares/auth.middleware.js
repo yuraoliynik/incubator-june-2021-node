@@ -1,5 +1,6 @@
 const User = require('../models/User');
-const authValidator = require('../validators/auth.validator');
+const {authValidator} = require('../validators');
+const passwordService = require('../services/password.service');
 
 module.exports = {
     isAuthValid: (req, res, next) => {
@@ -9,12 +10,17 @@ module.exports = {
             const {error} = authValidator.validate(body);
 
             if (error) {
-                throw new Error('Wrong email or password!!!');
+                next({
+                    message: 'Wrong email or password!!!',
+                    status: 404
+                });
+
+                return;
             }
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     },
 
@@ -27,14 +33,50 @@ module.exports = {
                 .lean();
 
             if (!foundUser) {
-                throw new Error('Wrong email or password!!!');
+                next({
+                    message: 'Wrong email or password!!!',
+                    status: 404
+                });
+
+                return;
             }
 
             req.foundUser = foundUser;
 
             next();
         } catch (err) {
-            res.json(err.message);
+            next(err);
+        }
+    },
+
+    isUserRolesChecked: (roles = []) => (req, res, next) => {
+        try {
+            const {foundUser: {role}} = req;
+
+            if (!roles.includes(role)) {
+                next({
+                    message: 'Access denied',
+                    status: 401
+                });
+
+                return;
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    isPasswordMatched: async (req, res, next) => {
+        try {
+            const {body, foundUser} = req;
+
+            await passwordService.compare(body.password, foundUser.password);
+
+            next();
+        } catch (err) {
+            next(err);
         }
     }
 };

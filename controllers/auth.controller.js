@@ -1,18 +1,15 @@
-const passwordService = require('../services/password.service');
 const userUtil = require('../util/user.util');
 
 module.exports = {
-    login: async (req, res) => {
+    login: (req, res, next) => {
         try {
-            const {body, foundUser} = req;
+            const {foundUser} = req;
 
-            await passwordService.compare(body.password, foundUser.password);
+            const normedUser = userUtil.userNormalizator(foundUser);
 
-            const normUser = userUtil.userNormalizator(foundUser);
-
-            res.json(normUser);
+            res.json(normedUser);
         } catch (err) {
-            res.json(err.message);
+            next(err);
         }
     }
 };
