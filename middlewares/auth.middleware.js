@@ -22,7 +22,9 @@ module.exports = {
         try {
             const {body: {email}} = req;
 
-            const foundUser = await User.findOne({email}).select('+password');
+            const foundUser = await User.findOne({email})
+                .select('+password')
+                .lean();
 
             if (!foundUser) {
                 throw new Error('Wrong email or password!!!');
