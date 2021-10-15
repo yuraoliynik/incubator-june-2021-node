@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
-const {userMiddleware} = require('../middlewares');
+const {userValidator, userPutValidator} = require('../validators');
+const {validMiddleware, userMiddleware} = require('../middlewares');
 const {userController} = require('../controllers');
 
 router.get(
@@ -9,7 +10,7 @@ router.get(
 );
 router.post(
     '/',
-    userMiddleware.isUserValid,
+    validMiddleware.isBodyValid(userValidator),
     userMiddleware.isUserEmailExist,
     userController.createUser
 );
@@ -21,7 +22,7 @@ router.get(
 );
 router.put(
     '/:userId',
-    userMiddleware.isUserPutValid,
+    validMiddleware.isBodyValid(userPutValidator),
     userMiddleware.isUserExist,
     userController.updateUser
 );

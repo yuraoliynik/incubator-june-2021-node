@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const {APP_PORT, MONGO_CONNECT_URL} = require('./configs/config');
 const {authRouter, userRouter} = require('./routers');
+const {errorStatuses} = require('./constants');
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use('/auth', authRouter);
 // eslint-disable-next-line no-unused-vars
 app.use('*', (err, req, res, next) => {
     res
-        .status(err.status || 500)
+        .status(err.status || errorStatuses['500'])
         .json({msg: err.message});
 });
 

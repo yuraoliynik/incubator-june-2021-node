@@ -1,14 +1,19 @@
 const router = require('express').Router();
 
-const {authMiddleware} = require('../middlewares');
+const {authValidator} = require('../validators');
+const {validMiddleware, authMiddleware} = require('../middlewares');
 const {authController} = require('../controllers');
 const {userRoles} = require('../constants');
 
 router.post(
     '/',
-    authMiddleware.isAuthValid,
+    validMiddleware.isBodyValid(authValidator, 1),
     authMiddleware.isEmailExist,
-    authMiddleware.isUserRolesChecked([userRoles.USER]),
+    authMiddleware.isUserRolesChecked([
+        userRoles.USER,
+        userRoles.ADMIN,
+        userRoles.MANAGER
+    ]),
     authMiddleware.isPasswordMatched,
     authController.login
 );

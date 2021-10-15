@@ -1,5 +1,6 @@
-const User = require('../models/User');
+const {errorStatuses} = require('../constants');
 const passwordService = require('../services/password.service');
+const User = require('../models/User');
 const userUtil = require('../util/user.util');
 
 module.exports = {
@@ -33,7 +34,9 @@ module.exports = {
 
             const normedUser = userUtil.userNormalizator(createdUser.toObject());
 
-            res.json(normedUser);
+            res
+                .status(errorStatuses['201'])
+                .json(normedUser);
         } catch (err) {
             next(err);
         }
@@ -49,7 +52,9 @@ module.exports = {
                 {new: true, runValidators: true}
             );
 
-            res.json(updatedUser);
+            res
+                .status(errorStatuses['201'])
+                .json(updatedUser);
         } catch (err) {
             next(err);
         }
@@ -59,9 +64,9 @@ module.exports = {
         try {
             const {params: {userId}} = req;
 
-            const deletedUser = await User.findByIdAndDelete(userId).select('-password');
+            await User.findByIdAndDelete(userId).select('-password');
 
-            res.json(deletedUser);
+            res.sendStatus(errorStatuses['204']);
         } catch (err) {
             next(err);
         }

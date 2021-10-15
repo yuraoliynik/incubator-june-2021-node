@@ -1,29 +1,8 @@
-const User = require('../models/User');
-const {authValidator} = require('../validators');
+const {errorMessages, errorStatuses} = require('../constants');
 const passwordService = require('../services/password.service');
+const User = require('../models/User');
 
 module.exports = {
-    isAuthValid: (req, res, next) => {
-        try {
-            const {body} = req;
-
-            const {error} = authValidator.validate(body);
-
-            if (error) {
-                next({
-                    message: 'Wrong email or password!!!',
-                    status: 404
-                });
-
-                return;
-            }
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    },
-
     isEmailExist: async (req, res, next) => {
         try {
             const {body: {email}} = req;
@@ -34,8 +13,8 @@ module.exports = {
 
             if (!foundUser) {
                 next({
-                    message: 'Wrong email or password!!!',
-                    status: 404
+                    message: errorMessages.WRONG_EMAIL_OR_PASSWORD,
+                    status: errorStatuses['400']
                 });
 
                 return;
@@ -54,12 +33,10 @@ module.exports = {
             const {foundUser: {role}} = req;
 
             if (!roles.includes(role)) {
-                next({
-                    message: 'Access denied',
-                    status: 401
+                return next({
+                    message: errorMessages.ACCESS_DENIED,
+                    status: errorStatuses['401']
                 });
-
-                return;
             }
 
             next();
