@@ -1,7 +1,7 @@
-const {errorStatuses} = require('../constants');
-const passwordService = require('../services/password.service');
 const User = require('../models/User');
 const userUtil = require('../util/user.util');
+const passwordService = require('../services/password.service');
+const {errorStatuses} = require('../constants');
 
 module.exports = {
     getUsers: async (req, res, next) => {

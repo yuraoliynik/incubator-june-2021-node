@@ -1,7 +1,8 @@
 const router = require('express').Router();
 
 const {userValidator, userPutValidator} = require('../validators');
-const {validMiddleware, userMiddleware} = require('../middlewares');
+const {roleMiddleware, validMiddleware, userMiddleware} = require('../middlewares');
+const {userRoles} = require('../constants');
 const {userController} = require('../controllers');
 
 router.get(
@@ -29,6 +30,7 @@ router.put(
 router.delete(
     '/:userId',
     userMiddleware.isUserExist,
+    roleMiddleware.isUserRolesChecked([userRoles.ADMIN]),
     userController.deleteUser
 );
 

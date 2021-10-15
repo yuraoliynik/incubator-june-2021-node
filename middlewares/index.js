@@ -1,5 +1,6 @@
 module.exports = {
-    validMiddleware: require('./valid.middleware'),
     authMiddleware: require('./auth.middleware'),
-    userMiddleware: require('./user.middleware')
+    roleMiddleware: require('./role.middlware'),
+    userMiddleware: require('./user.middleware'),
+    validMiddleware: require('./valid.middleware')
 };
