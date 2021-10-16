@@ -1,6 +1,6 @@
 const {errorMessages, errorStatuses} = require('../constants');
 
-module.exports ={
+module.exports = {
     isBodyValid: (validator, authKey = 0) => (req, res, next) => {
         try {
             const {body} = req;

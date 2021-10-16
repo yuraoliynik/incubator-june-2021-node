@@ -12,4 +12,12 @@ router.post(
     authController.login
 );
 
+router.post(
+    '/oauth',
+    // validMiddleware.isBodyValid(authValidator, 1),
+    // authMiddleware.isEmailExist,
+    // authMiddleware.isPasswordMatched,
+    authController.oauth
+);
+
 module.exports = router;

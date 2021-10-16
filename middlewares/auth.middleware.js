@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const passwordService = require('../services/password.service');
+const {User} = require('../models');
+const {passwordService} = require('../services');
 const {errorMessages, errorStatuses} = require('../constants');
 
 module.exports = {

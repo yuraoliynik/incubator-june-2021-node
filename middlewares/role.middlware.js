@@ -1,6 +1,6 @@
 const {errorMessages, errorStatuses} = require('../constants');
 
-module.exports ={
+module.exports = {
     isUserRolesChecked: (roles = []) => (req, res, next) => {
         try {
             const {foundUser: {role}} = req;
