@@ -14,22 +14,20 @@ router.post(
 
 router.post(
     '/access',
-    authController.access
+    authMiddleware.access
 );
 
 router.post(
     '/refresh',
-    authController.refresh,
     validMiddleware.isBodyValid(refreshValidator),
-    authMiddleware.isEmailExist,
+    authMiddleware.access,
     authController.login
 );
 
 router.post(
     '/logout',
-    authController.refresh,
     validMiddleware.isBodyValid(refreshValidator),
-    authMiddleware.isEmailExist,
+    authMiddleware.access,
     authController.logout
 );
 
