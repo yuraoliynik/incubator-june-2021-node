@@ -1,6 +1,6 @@
-const User = require('../models/User');
+const {User} = require('../models');
 const userUtil = require('../util/user.util');
-const passwordService = require('../services/password.service');
+const {passwordService} = require('../services');
 const {errorStatuses} = require('../constants');
 
 module.exports = {

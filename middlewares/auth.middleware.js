@@ -1,7 +1,6 @@
-const {OAuth, User} = require('../models');
+const {Oauth, User} = require('../models');
 const {jwtService, passwordService} = require('../services');
-const {ACCESS, REFRESH} = require('../configs/config');
-const {errorMessages, errorStatuses} = require('../constants');
+const {errorMessages, errorStatuses, headerNames, tokenTypes} = require('../constants');
 
 module.exports = {
     isEmailExist: async (req, res, next) => {
@@ -41,27 +40,31 @@ module.exports = {
         }
     },
 
-    access: async (req, res, next) => {
+    checkAccessToken: async (req, res, next) => {
         try {
-            const {query: {Authorization: token_access}, body: {token_refresh}} = req;
+            const token = req.get(headerNames.AUTHORIZATION);
 
-            const token = token_refresh ? token_refresh : token_access;
-            const token_type = token_refresh ? REFRESH : ACCESS;
-
-            jwtService.verify(token, token_type);
-
-            const foundJWT = await OAuth.findOne({token});
-
-            if (!foundJWT) {
+            if (!token) {
                 return next({
-                    message: 'Invalid token',
-                    status: 401
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses['401']
                 });
             }
 
-            if (token_refresh) {
-                await OAuth.deleteOne({token_refresh});
+            jwtService.verifyToken(token, tokenTypes.ACCESS);
+
+            const foundOauth = await Oauth
+                .findOne({token_access: token})
+                .populate('user');
+
+            if (!foundOauth) {
+                return next({
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses['401']
+                });
             }
+
+            req.foundUser = foundOauth.user;
 
             next();
         } catch (err) {
@@ -69,22 +72,33 @@ module.exports = {
         }
     },
 
-    refresh: async (req, res, next) => {
+    checkRefreshToken: async (req, res, next) => {
         try {
-            const {query: {Authorization}} = req;
+            const token = req.get(headerNames.AUTHORIZATION);
 
-            jwtService.verify(Authorization, REFRESH);
-
-            const {token_refresh} = await OAuth.findOne({token_refresh: Authorization});
-
-            if (!token_refresh) {
+            if (!token) {
                 return next({
-                    message: 'Invalid token',
-                    status: 401
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses['401']
                 });
             }
 
-            await OAuth.deleteOne({token_refresh});
+            jwtService.verifyToken(token, tokenTypes.REFRESH);
+
+            const foundOauth = await Oauth
+                .findOne({token_refresh: token})
+                .populate('user');
+
+            if (!foundOauth) {
+                return next({
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses['401']
+                });
+            }
+
+            await Oauth.deleteOne({token_refresh: token});
+
+            req.foundUser = foundOauth.user;
 
             next();
         } catch (err) {

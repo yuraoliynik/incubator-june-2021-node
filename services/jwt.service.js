@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
-const {SECRET_WORD_ACCESS, SECRET_WORD_REFRESH, ACCESS} = require('../configs/config');
+
+const {JWT_SECRET_WORD_ACCESS, JWT_SECRET_WORD_REFRESH} = require('../configs/config');
+const {errorMessages, errorStatuses, tokenTypes} = require('../constants');
 const ErrorHandler = require('../errors/ErrorHandler');
 
 module.exports = {
-    create: () => {
-        const token_access = jwt.sign({}, SECRET_WORD_ACCESS, {expiresIn: '15minutes'});
-        const token_refresh = jwt.sign({}, SECRET_WORD_REFRESH, {expiresIn: '30days'});
+    generateTokenPair: () => {
+        const token_access = jwt.sign({}, JWT_SECRET_WORD_ACCESS, {expiresIn: '15minutes'});
+        const token_refresh = jwt.sign({}, JWT_SECRET_WORD_REFRESH, {expiresIn: '30days'});
 
         return {
             token_access,
@@ -13,13 +15,13 @@ module.exports = {
         };
     },
 
-    verify: (token, token_type) => {
+    verifyToken: (token, token_type = tokenTypes.ACCESS) => {
         try {
-            const secretKey = token_type === ACCESS ? SECRET_WORD_ACCESS : SECRET_WORD_REFRESH;
+            const secretKey = token_type === tokenTypes.ACCESS ? JWT_SECRET_WORD_ACCESS : JWT_SECRET_WORD_REFRESH;
 
             return jwt.verify(token, secretKey);
         } catch (err) {
-            throw new ErrorHandler('Invalid token', 401);
+            throw new ErrorHandler(errorMessages.INVALID_TOKEN, errorStatuses['401']);
         }
     }
 };

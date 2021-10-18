@@ -1,16 +1,46 @@
-const {OAuth} = require('../models');
+const {Oauth} = require('../models');
+const userUtil = require('../util/user.util');
 const {jwtService} = require('../services');
+const {errorStatuses} = require('../constants');
 
 module.exports = {
     login: async (req, res, next) => {
         try {
-            const {foundUser: {_id}} = req;
+            const {foundUser} = req;
 
-            const jwt = jwtService.create();
+            const normedUser = userUtil.userNormalizator(foundUser);
 
-            const jwtUser = await (await OAuth.create({...jwt, user: _id})).populate('user');
+            const tokenPair = jwtService.generateTokenPair();
 
-            res.json(jwtUser);
+            await Oauth.create({
+                ...tokenPair,
+                user: foundUser._id
+            });
+
+            res.json({
+                user: normedUser,
+                ...tokenPair
+            });
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    refresh: async (req, res, next) => {
+        try {
+            const {foundUser} = req;
+
+            const tokenPair = jwtService.generateTokenPair();
+
+            await Oauth.create({
+                ...tokenPair,
+                user: foundUser._id
+            });
+
+            res.json({
+                user: foundUser,
+                ...tokenPair
+            });
         } catch (err) {
             next(err);
         }
@@ -18,13 +48,13 @@ module.exports = {
 
     logout: async (req, res, next) => {
         try {
-            const {body: {all}, foundUser: {_id}} = req;
+            const {body: {all}, foundUser} = req;
 
             if (all) {
-                await OAuth.deleteMany({user: _id});
+                await Oauth.deleteMany({user: foundUser._id});
             }
 
-            res.json('logout');
+            res.sendStatus(errorStatuses['205']);
         } catch (err) {
             next(err);
         }
