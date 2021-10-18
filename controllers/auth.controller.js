@@ -48,13 +48,11 @@ module.exports = {
 
     logout: async (req, res, next) => {
         try {
-            const {body: {all}, foundUser} = req;
+            const {foundUser} = req;
 
-            if (all) {
-                await Oauth.deleteMany({user: foundUser._id});
-            }
+            await Oauth.deleteOne({user: foundUser._id});
 
-            res.sendStatus(errorStatuses['205']);
+            res.sendStatus(errorStatuses.status_205);
         } catch (err) {
             next(err);
         }

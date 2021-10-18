@@ -10,14 +10,14 @@ module.exports = {
             if (authKey && error) {
                 return next({
                     message: errorMessages.WRONG_EMAIL_OR_PASSWORD,
-                    status: errorStatuses['400']
+                    status: errorStatuses.status_400
                 });
             }
 
             if (error) {
                 return next({
                     message: error.details[0].message,
-                    status: errorStatuses['400']
+                    status: errorStatuses.status_400
                 });
             }
 

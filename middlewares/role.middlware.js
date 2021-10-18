@@ -8,7 +8,7 @@ module.exports = {
             if (!roles.includes(role)) {
                 return next({
                     message: errorMessages.ACCESS_DENIED,
-                    status: errorStatuses['403']
+                    status: errorStatuses.status_403
                 });
             }
 

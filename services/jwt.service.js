@@ -21,7 +21,7 @@ module.exports = {
 
             return jwt.verify(token, secretKey);
         } catch (err) {
-            throw new ErrorHandler(errorMessages.INVALID_TOKEN, errorStatuses['401']);
+            throw new ErrorHandler(errorMessages.INVALID_TOKEN, errorStatuses.status_401);
         }
     }
 };

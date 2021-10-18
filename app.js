@@ -19,7 +19,7 @@ app.use('/auth', authRouter);
 // eslint-disable-next-line no-unused-vars
 app.use('*', (err, req, res, next) => {
     res
-        .status(err.status || errorStatuses['500'])
+        .status(err.status || errorStatuses.status_500)
         .json({msg: err.message});
 });
 

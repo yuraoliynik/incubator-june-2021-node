@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const {authValidator, logoutValidator} = require('../validators');
+const {authValidator} = require('../validators');
 const {authMiddleware, validMiddleware} = require('../middlewares');
 const {authController} = require('../controllers');
 
@@ -20,8 +20,7 @@ router.post(
 
 router.post(
     '/logout',
-    validMiddleware.isBodyValid(logoutValidator),
-    authMiddleware.checkRefreshToken,
+    authMiddleware.checkAccessToken,
     authController.logout
 );
 

@@ -14,7 +14,7 @@ module.exports = {
             if (!foundUser) {
                 next({
                     message: errorMessages.WRONG_EMAIL_OR_PASSWORD,
-                    status: errorStatuses['400']
+                    status: errorStatuses.status_400
                 });
 
                 return;
@@ -47,7 +47,7 @@ module.exports = {
             if (!token) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
-                    status: errorStatuses['401']
+                    status: errorStatuses.status_401
                 });
             }
 
@@ -60,7 +60,7 @@ module.exports = {
             if (!foundOauth) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
-                    status: errorStatuses['401']
+                    status: errorStatuses.status_401
                 });
             }
 
@@ -79,7 +79,7 @@ module.exports = {
             if (!token) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
-                    status: errorStatuses['401']
+                    status: errorStatuses.status_401
                 });
             }
 
@@ -92,7 +92,7 @@ module.exports = {
             if (!foundOauth) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
-                    status: errorStatuses['401']
+                    status: errorStatuses.status_401
                 });
             }
 

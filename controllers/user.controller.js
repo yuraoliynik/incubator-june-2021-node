@@ -35,7 +35,7 @@ module.exports = {
             const normedUser = userUtil.userNormalizator(createdUser.toObject());
 
             res
-                .status(errorStatuses['201'])
+                .status(errorStatuses.status_201)
                 .json(normedUser);
         } catch (err) {
             next(err);
@@ -53,7 +53,7 @@ module.exports = {
             );
 
             res
-                .status(errorStatuses['201'])
+                .status(errorStatuses.status_201)
                 .json(updatedUser);
         } catch (err) {
             next(err);
@@ -66,7 +66,7 @@ module.exports = {
 
             await User.findByIdAndDelete(userId).select('-password');
 
-            res.sendStatus(errorStatuses['204']);
+            res.sendStatus(errorStatusesstatus_204);
         } catch (err) {
             next(err);
         }
