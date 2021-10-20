@@ -77,7 +77,8 @@ module.exports = {
                 {
                     userName: name,
                     link: linkForgotPassword
-                });
+                }
+            );
 
             res.sendStatus(errorStatuses.status_201);
         } catch (err) {
