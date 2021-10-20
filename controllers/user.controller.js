@@ -73,7 +73,7 @@ module.exports = {
         try {
             const {params: {userId}, foundUser: {name, email}} = req;
 
-            await User.findByIdAndDelete(userId);
+            await User.deleteOne({user: userId});
             Oauth.deleteOne({user: userId});
 
             await emailService.sendMail(
