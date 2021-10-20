@@ -1,7 +1,7 @@
-const {User} = require('../models');
+const {emailActions, errorStatuses} = require('../constants');
+const {Oauth, User} = require('../models');
+const {emailService, passwordService} = require('../services');
 const userUtil = require('../util/user.util');
-const {passwordService} = require('../services');
-const {errorStatuses} = require('../constants');
 
 module.exports = {
     getUsers: async (req, res, next) => {
@@ -26,13 +26,22 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const {body, body: {password}} = req;
+            const {body, body: {name, email, password}} = req;
 
             const hashedPassword = await passwordService.hash(password);
 
-            const createdUser = await User.create({...body, password: hashedPassword});
+            const createdUser = await User.create({
+                ...body,
+                password: hashedPassword
+            });
 
             const normedUser = userUtil.userNormalizator(createdUser.toObject());
+
+            await emailService.sendMail(
+                email,
+                emailActions.USER_WAS_REGISTERED,
+                {userName: name}
+            );
 
             res
                 .status(errorStatuses.status_201)
@@ -62,11 +71,18 @@ module.exports = {
 
     deleteUser: async (req, res, next) => {
         try {
-            const {params: {userId}} = req;
+            const {params: {userId}, foundUser: {name, email}} = req;
 
-            await User.findByIdAndDelete(userId).select('-password');
+            await User.findByIdAndDelete(userId);
+            Oauth.deleteOne({user: userId});
 
-            res.sendStatus(errorStatusesstatus_204);
+            await emailService.sendMail(
+                email,
+                emailActions.USER_WAS_DELETED,
+                {userName: name}
+            );
+
+            res.sendStatus(errorStatuses.status_204);
         } catch (err) {
             next(err);
         }

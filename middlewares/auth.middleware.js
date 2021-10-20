@@ -1,6 +1,6 @@
-const {Oauth, User} = require('../models');
-const {jwtService, passwordService} = require('../services');
 const {errorMessages, errorStatuses, headerNames, tokenTypes} = require('../constants');
+const {ActionToken, Oauth, User} = require('../models');
+const {jwtService, passwordService} = require('../services');
 
 module.exports = {
     isEmailExist: async (req, res, next) => {
@@ -99,6 +99,40 @@ module.exports = {
             await Oauth.deleteOne({token_refresh: token});
 
             req.foundUser = foundOauth.user;
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    checkActionToken: async (req, res, next) => {
+        try {
+            const token = req.get(headerNames.AUTHORIZATION);
+
+            if (!token) {
+                return next({
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses.status_401
+                });
+            }
+
+            jwtService.verifyToken(token, tokenTypes.ACTION);
+
+            const foundActionToken = await ActionToken
+                .findOne({token_action: token})
+                .populate('user');
+
+            if (!foundActionToken) {
+                return next({
+                    message: errorMessages.INVALID_TOKEN,
+                    status: errorStatuses.status_401
+                });
+            }
+
+            await ActionToken.deleteOne({token_action: token});
+
+            req.foundUser = foundActionToken.user;
 
             next();
         } catch (err) {

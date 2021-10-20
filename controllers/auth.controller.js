@@ -1,7 +1,7 @@
-const {Oauth} = require('../models');
+const {emailActions, errorStatuses} = require('../constants');
+const {ActionToken, Oauth, User} = require('../models');
+const {emailService, jwtService, passwordService} = require('../services');
 const userUtil = require('../util/user.util');
-const {jwtService} = require('../services');
-const {errorStatuses} = require('../constants');
 
 module.exports = {
     login: async (req, res, next) => {
@@ -21,6 +21,18 @@ module.exports = {
                 user: normedUser,
                 ...tokenPair
             });
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    logout: async (req, res, next) => {
+        try {
+            const {foundUser} = req;
+
+            await Oauth.deleteOne({user: foundUser._id});
+
+            res.sendStatus(errorStatuses.status_205);
         } catch (err) {
             next(err);
         }
@@ -46,13 +58,53 @@ module.exports = {
         }
     },
 
-    logout: async (req, res, next) => {
+    forgotPassword: async (req, res, next) => {
         try {
-            const {foundUser} = req;
+            const {foundUser: {_id, name, email}} = req;
 
-            await Oauth.deleteOne({user: foundUser._id});
+            const token_action = await jwtService.generateTokenAction();
 
-            res.sendStatus(errorStatuses.status_205);
+            await ActionToken.create({
+                token_action,
+                user: _id
+            });
+
+            const linkForgotPassword = `http://localhost:5000/auth/forgot-password/${token_action}`;
+
+            await emailService.sendMail(
+                email,
+                emailActions.FORGOT_PASSWORD,
+                {
+                    userName: name,
+                    link: linkForgotPassword
+                });
+
+            res.sendStatus(errorStatuses.status_201);
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    changePassword: async (req, res, next) => {
+        try {
+            const {body: {password}, foundUser: {_id, name, email}} = req;
+
+            const hashedPassword = await passwordService.hash(password);
+
+            await Oauth.deleteMany({user: _id});
+
+            await User.updateOne(
+                {_id},
+                {password: hashedPassword}
+            );
+
+            await emailService.sendMail(
+                email,
+                emailActions.CHANGE_PASSWORD,
+                {userName: name}
+            );
+
+            res.sendStatus(errorStatuses.status_201);
         } catch (err) {
             next(err);
         }

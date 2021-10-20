@@ -1,4 +1,5 @@
 module.exports = {
+    emailActions: require('./email-action.enum'),
     errorMessages: require('./error-message.enum'),
     errorStatuses: require('./error-status.enum'),
     headerNames: require('./header-name.enum'),

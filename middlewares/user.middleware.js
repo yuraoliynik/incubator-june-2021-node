@@ -1,5 +1,5 @@
-const {User} = require('../models');
 const {errorMessages, errorStatuses} = require('../constants');
+const {User} = require('../models');
 
 module.exports = {
     isUserExist: async (req, res, next) => {

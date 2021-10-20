@@ -9,6 +9,11 @@ const userSchema = new Schema({
         trim: true
     },
 
+    age: {
+        type: Number,
+        trim: true
+    },
+
     email: {
         type: String,
         required: true,

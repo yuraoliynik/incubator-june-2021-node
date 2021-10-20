@@ -1,10 +1,16 @@
 const jwt = require('jsonwebtoken');
 
-const {JWT_SECRET_WORD_ACCESS, JWT_SECRET_WORD_REFRESH} = require('../configs/config');
+const {
+    JWT_SECRET_WORD_ACCESS,
+    JWT_SECRET_WORD_ACTION,
+    JWT_SECRET_WORD_REFRESH
+} = require('../configs/config');
 const {errorMessages, errorStatuses, tokenTypes} = require('../constants');
 const ErrorHandler = require('../errors/ErrorHandler');
 
 module.exports = {
+    generateTokenAction: () => jwt.sign({}, JWT_SECRET_WORD_ACTION, {expiresIn: '24hours'}),
+
     generateTokenPair: () => {
         const token_access = jwt.sign({}, JWT_SECRET_WORD_ACCESS, {expiresIn: '15minutes'});
         const token_refresh = jwt.sign({}, JWT_SECRET_WORD_REFRESH, {expiresIn: '30days'});
@@ -17,7 +23,21 @@ module.exports = {
 
     verifyToken: (token, token_type = tokenTypes.ACCESS) => {
         try {
-            const secretKey = token_type === tokenTypes.ACCESS ? JWT_SECRET_WORD_ACCESS : JWT_SECRET_WORD_REFRESH;
+            let secretKey;
+
+            switch (token_type) {
+                case tokenTypes.ACCESS:
+                    secretKey = JWT_SECRET_WORD_ACCESS;
+                    break;
+
+                case tokenTypes.ACTION:
+                    secretKey = JWT_SECRET_WORD_ACTION;
+                    break;
+
+                case tokenTypes.REFRESH:
+                    secretKey = JWT_SECRET_WORD_REFRESH;
+                    break;
+            }
 
             return jwt.verify(token, secretKey);
         } catch (err) {
