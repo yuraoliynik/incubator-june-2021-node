@@ -25,7 +25,7 @@ const sendMail = async (userMail, emailAction, context = {}) => {
     const templateInfo = allTemplates[emailAction];
 
     if (!templateInfo) {
-        throw new ErrorHandler(errorMessages.WRONG_TEMPLATE_NAME, errorStatuses.status_404);
+        throw new ErrorHandler(errorMessages.WRONG_TEMPLATE_NAME, errorStatuses.code_404);
     }
 
     const html = await emailTemplates.render(templateInfo.templateName, context);

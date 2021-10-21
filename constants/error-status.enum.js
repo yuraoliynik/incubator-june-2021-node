@@ -1,12 +1,12 @@
 module.exports = {
-    status_200: 200,
-    status_201: 201,
-    status_204: 204,
-    status_205: 205,
-    status_400: 400,
-    status_401: 401,
-    status_403: 403,
-    status_404: 404,
-    status_409: 409,
-    status_500: 500
+    code_200: 200,
+    code_201: 201,
+    code_204: 204,
+    code_205: 205,
+    code_400: 400,
+    code_401: 401,
+    code_403: 403,
+    code_404: 404,
+    code_409: 409,
+    code_500: 500
 };

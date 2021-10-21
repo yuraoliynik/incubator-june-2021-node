@@ -5,7 +5,9 @@ const userPutValidator = Joi.object({
         .alphanum()
         .min(2)
         .max(30)
-        .trim()
+        .trim(),
+
+    age: Joi.number()
 });
 
 module.exports = userPutValidator;

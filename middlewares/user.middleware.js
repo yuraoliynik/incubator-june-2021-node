@@ -11,7 +11,7 @@ module.exports = {
             if (!foundUser) {
                 return next({
                     message: errorMessages.USER_ID_DOESNT_EXIST,
-                    status: errorStatuses.status_404
+                    status: errorStatuses.code_404
                 });
             }
 
@@ -32,7 +32,7 @@ module.exports = {
             if (userEmail) {
                 return next({
                     message: errorMessages.USER_EMAIL_ALREADY_EXISTS,
-                    status: errorStatuses.status_409
+                    status: errorStatuses.code_409
                 });
             }
 

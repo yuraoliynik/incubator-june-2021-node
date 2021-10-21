@@ -32,7 +32,7 @@ module.exports = {
 
             await Oauth.deleteOne({user: foundUser._id});
 
-            res.sendStatus(errorStatuses.status_205);
+            res.sendStatus(errorStatuses.code_205);
         } catch (err) {
             next(err);
         }
@@ -80,7 +80,7 @@ module.exports = {
                 }
             );
 
-            res.sendStatus(errorStatuses.status_201);
+            res.sendStatus(errorStatuses.code_201);
         } catch (err) {
             next(err);
         }
@@ -105,7 +105,7 @@ module.exports = {
                 {userName: name}
             );
 
-            res.sendStatus(errorStatuses.status_201);
+            res.sendStatus(errorStatuses.code_201);
         } catch (err) {
             next(err);
         }

@@ -10,8 +10,7 @@ const userSchema = new Schema({
     },
 
     age: {
-        type: Number,
-        trim: true
+        type: Number
     },
 
     email: {

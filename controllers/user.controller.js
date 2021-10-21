@@ -44,7 +44,7 @@ module.exports = {
             );
 
             res
-                .status(errorStatuses.status_201)
+                .status(errorStatuses.code_201)
                 .json(normedUser);
         } catch (err) {
             next(err);
@@ -62,7 +62,7 @@ module.exports = {
             );
 
             res
-                .status(errorStatuses.status_201)
+                .status(errorStatuses.code_201)
                 .json(updatedUser);
         } catch (err) {
             next(err);
@@ -82,7 +82,7 @@ module.exports = {
                 {userName: name}
             );
 
-            res.sendStatus(errorStatuses.status_204);
+            res.sendStatus(errorStatuses.code_204);
         } catch (err) {
             next(err);
         }

@@ -12,7 +12,7 @@ module.exports = {
         if (!isPasswordMatched) {
             throw new ErrorHandler(
                 errorMessages.WRONG_EMAIL_OR_PASSWORD,
-                errorStatuses.status_400
+                errorStatuses.code_400
             );
         }
     }

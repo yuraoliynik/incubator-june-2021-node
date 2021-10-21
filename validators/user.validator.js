@@ -11,6 +11,8 @@ const userValidator = Joi.object({
         .trim()
         .required(),
 
+    age: Joi.number(),
+
     email: Joi.string()
         .trim()
         .lowercase()
