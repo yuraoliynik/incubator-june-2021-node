@@ -85,7 +85,7 @@ module.exports = {
             jwtService.verifyToken(token, tokenTypes.ACCESS);
 
             const foundOauth = await Oauth.findOne({accessToken: token});
-            console.log(foundOauth);
+
             if (!foundOauth) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
