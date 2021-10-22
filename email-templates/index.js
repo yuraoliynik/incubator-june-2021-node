@@ -1,9 +1,19 @@
 const {emailActions} = require('../constants');
 
 module.exports = {
+    [emailActions.ACTIVATED_ACCOUNT]: {
+        templateName: 'activated-account',
+        subject: 'Activated'
+    },
+
     [emailActions.CHANGE_PASSWORD]: {
         templateName: 'change-password',
         subject: 'Change password!!!'
+    },
+
+    [emailActions.DELETED_ACCOUNT]: {
+        templateName: 'deleted-account',
+        subject: 'Deleted'
     },
 
     [emailActions.FORGOT_PASSWORD]: {
@@ -11,9 +21,14 @@ module.exports = {
         subject: 'Forgot password!!!'
     },
 
-    [emailActions.USER_WAS_DELETED]: {
-        templateName: 'user-was-deleted',
-        subject: 'Deleted'
+    [emailActions.USER_DATA_WAS_UPDATED]: {
+        templateName: 'user-data-was-updated',
+        subject: 'Updated'
+    },
+
+    [emailActions.USER_IS_LOGGED_IN]: {
+        templateName: 'user-is-logged-in',
+        subject: 'Logged in'
     },
 
     [emailActions.USER_WAS_REGISTERED]: {

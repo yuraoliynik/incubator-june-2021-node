@@ -2,40 +2,72 @@ const jwt = require('jsonwebtoken');
 
 const {
     JWT_SECRET_WORD_ACCESS,
-    JWT_SECRET_WORD_ACTION,
-    JWT_SECRET_WORD_REFRESH
+    JWT_SECRET_WORD_REFRESH,
+    JWT_SECRET_WORD_ACTION_ACTIVATE_ACCOUNT,
+    JWT_SECRET_WORD_ACTION_FORGOT_PASSWORD
 } = require('../configs/config');
-const {errorMessages, errorStatuses, tokenTypes} = require('../constants');
+const {
+    actionTokenTypes,
+    errorMessages,
+    errorStatuses,
+    tokenTypes
+} = require('../constants');
 const ErrorHandler = require('../errors/ErrorHandler');
 
 module.exports = {
-    generateTokenAction: () => jwt.sign({}, JWT_SECRET_WORD_ACTION, {expiresIn: '24hours'}),
+    generateTokenAction: (actionTokenType) => {
+        let actionSecretKey;
 
-    generateTokenPair: () => {
-        const token_access = jwt.sign({}, JWT_SECRET_WORD_ACCESS, {expiresIn: '15minutes'});
-        const token_refresh = jwt.sign({}, JWT_SECRET_WORD_REFRESH, {expiresIn: '30days'});
+        switch (actionTokenType) {
+            case actionTokenTypes.ACTIVATE_ACCOUNT:
+                actionSecretKey = JWT_SECRET_WORD_ACTION_ACTIVATE_ACCOUNT;
+                break;
+
+            case actionTokenTypes.FORGOT_PASSWORD:
+                actionSecretKey = JWT_SECRET_WORD_ACTION_FORGOT_PASSWORD;
+                break;
+
+            default:
+                throw new ErrorHandler(errorMessages.WRONG_TOKEN_TYPE, errorStatuses.code_404);
+        }
+
+        const actionToken = jwt.sign({}, actionSecretKey, {expiresIn: '24hours'});
 
         return {
-            token_access,
-            token_refresh
+            token: actionToken,
+            type: actionTokenType
         };
     },
 
-    verifyToken: (token, token_type = tokenTypes.ACCESS) => {
+    generateTokenPair: () => {
+        const accessToken = jwt.sign({}, JWT_SECRET_WORD_ACCESS, {expiresIn: '15minutes'});
+        const refreshToken = jwt.sign({}, JWT_SECRET_WORD_REFRESH, {expiresIn: '30days'});
+
+        return {
+            accessToken,
+            refreshToken
+        };
+    },
+
+    verifyToken: (token, tokenType = tokenTypes.ACCESS) => {
         try {
             let secretKey;
 
-            switch (token_type) {
+            switch (tokenType) {
                 case tokenTypes.ACCESS:
                     secretKey = JWT_SECRET_WORD_ACCESS;
                     break;
 
-                case tokenTypes.ACTION:
-                    secretKey = JWT_SECRET_WORD_ACTION;
-                    break;
-
                 case tokenTypes.REFRESH:
                     secretKey = JWT_SECRET_WORD_REFRESH;
+                    break;
+
+                case actionTokenTypes.ACTIVATE_ACCOUNT:
+                    secretKey = JWT_SECRET_WORD_ACTION_ACTIVATE_ACCOUNT;
+                    break;
+
+                case actionTokenTypes.FORGOT_PASSWORD:
+                    secretKey = JWT_SECRET_WORD_ACTION_FORGOT_PASSWORD;
                     break;
             }
 

@@ -2,21 +2,21 @@ const {model, Schema} = require('mongoose');
 
 const {modelNames} = require('../constants');
 
-const actionTokenSchema = new Schema({
-    token: {
+const oAuthSchema = new Schema({
+    accessToken: {
         type: String,
         required: true
     },
 
-    type: {
+    refreshToken: {
         type: String,
         required: true
     },
 
     user: {
         type: Schema.Types.ObjectId,
-        required: true,
-        ref: modelNames.USER
+        ref: modelNames.USER,
+        required: true
     }
 }, {
     id: false,
@@ -26,8 +26,8 @@ const actionTokenSchema = new Schema({
     toJSON: {virtuals: true}
 });
 
-actionTokenSchema.pre('findOne', function(){
+oAuthSchema.pre('findOne', function(){
     this.populate('user');
 });
 
-module.exports = model(modelNames.ACTION_TOKEN, actionTokenSchema);
+module.exports = model(modelNames.O_AUTH, oAuthSchema);

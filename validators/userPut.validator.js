@@ -4,7 +4,12 @@ const userPutValidator = Joi.object({
     name: Joi.string()
         .alphanum()
         .min(2)
-        .max(30)
+        .max(20)
+        .trim(),
+
+    secondName: Joi.string()
+        .alphanum()
+        .max(20)
         .trim(),
 
     age: Joi.number()

@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const {regexp} = require('../constants');
 
-const authValidator = Joi.object({
+const emailValidator = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
@@ -10,4 +10,4 @@ const authValidator = Joi.object({
         .required()
 });
 
-module.exports = authValidator;
+module.exports = emailValidator;

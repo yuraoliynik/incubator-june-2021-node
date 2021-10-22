@@ -1,23 +1,43 @@
-const {errorMessages, errorStatuses, headerNames, tokenTypes} = require('../constants');
+const {
+    errorMessages,
+    errorStatuses,
+    headerNames,
+    tokenTypes
+} = require('../constants');
 const {ActionToken, Oauth, User} = require('../models');
 const {jwtService, passwordService} = require('../services');
 
 module.exports = {
+    isUserActivated: (req, res, next) => {
+        try {
+            const {foundUser: {isActive}} = req;
+
+            if (!isActive) {
+                return next({
+                    message: errorMessages.USER_IS_NOT_ACTIVATED,
+                    status: errorStatuses.code_403
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    },
+
     isEmailExist: async (req, res, next) => {
         try {
             const {body: {email}} = req;
 
-            const foundUser = await User.findOne({email})
-                .select('+password')
-                .lean();
+            const foundUser = await User
+                .findOne({email})
+                .select('+password');
 
             if (!foundUser) {
-                next({
+                return next({
                     message: errorMessages.WRONG_EMAIL_OR_PASSWORD,
                     status: errorStatuses.code_400
                 });
-
-                return;
             }
 
             req.foundUser = foundUser;
@@ -28,11 +48,22 @@ module.exports = {
         }
     },
 
-    isPasswordMatched: async (req, res, next) => {
+
+    isPasswordMatched: (findKey = 0) => async (req, res, next) => {
         try {
             const {body, foundUser} = req;
 
-            await passwordService.compare(body.password, foundUser.password);
+            if (!findKey) {
+                await passwordService.compare(body.password, foundUser.password);
+
+                return next();
+            }
+
+            const {password: hashPassword} = await User
+                .findById(foundUser._id)
+                .select('+password');
+
+            await passwordService.compare(body.password, hashPassword);
 
             next();
         } catch (err) {
@@ -53,10 +84,8 @@ module.exports = {
 
             jwtService.verifyToken(token, tokenTypes.ACCESS);
 
-            const foundOauth = await Oauth
-                .findOne({token_access: token})
-                .populate('user');
-
+            const foundOauth = await Oauth.findOne({accessToken: token});
+            console.log(foundOauth);
             if (!foundOauth) {
                 return next({
                     message: errorMessages.INVALID_TOKEN,
@@ -85,9 +114,7 @@ module.exports = {
 
             jwtService.verifyToken(token, tokenTypes.REFRESH);
 
-            const foundOauth = await Oauth
-                .findOne({token_refresh: token})
-                .populate('user');
+            const foundOauth = await Oauth.findOne({refreshToken: token});
 
             if (!foundOauth) {
                 return next({
@@ -96,7 +123,7 @@ module.exports = {
                 });
             }
 
-            await Oauth.deleteOne({token_refresh: token});
+            await Oauth.deleteOne({refreshToken: token});
 
             req.foundUser = foundOauth.user;
 
@@ -106,7 +133,7 @@ module.exports = {
         }
     },
 
-    checkActionToken: async (req, res, next) => {
+    checkActionToken: (actionTokenType) => async (req, res, next) => {
         try {
             const token = req.get(headerNames.AUTHORIZATION);
 
@@ -117,11 +144,9 @@ module.exports = {
                 });
             }
 
-            jwtService.verifyToken(token, tokenTypes.ACTION);
+            jwtService.verifyToken(token, actionTokenType);
 
-            const foundActionToken = await ActionToken
-                .findOne({token_action: token})
-                .populate('user');
+            const foundActionToken = await ActionToken.findOne({token});
 
             if (!foundActionToken) {
                 return next({
@@ -130,7 +155,7 @@ module.exports = {
                 });
             }
 
-            await ActionToken.deleteOne({token_action: token});
+            await ActionToken.deleteOne({token});
 
             req.foundUser = foundActionToken.user;
 

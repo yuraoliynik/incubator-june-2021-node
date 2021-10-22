@@ -1,7 +1,7 @@
-const {emailActions, errorStatuses} = require('../constants');
-const {Oauth, User} = require('../models');
-const {emailService, passwordService} = require('../services');
-const userUtil = require('../util/user.util');
+const {HOST_URL} = require('../configs/config');
+const {actionTokenTypes, emailActions, errorStatuses} = require('../constants');
+const {ActionToken, Oauth, User} = require('../models');
+const {emailService, jwtService} = require('../services');
 
 module.exports = {
     getUsers: async (req, res, next) => {
@@ -26,21 +26,27 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const {body, body: {name, email, password}} = req;
+            const {body} = req;
 
-            const hashedPassword = await passwordService.hash(password);
+            const createdUser = await User.createUserWithHashPassword(body);
 
-            const createdUser = await User.create({
-                ...body,
-                password: hashedPassword
+            const normedUser = createdUser.normalize();
+            const {_id, name, email} = normedUser;
+
+            const actionToken = jwtService.generateTokenAction(actionTokenTypes.ACTIVATE_ACCOUNT);
+            await ActionToken.create({
+                ...actionToken,
+                user: _id
             });
 
-            const normedUser = userUtil.userNormalizator(createdUser.toObject());
-
+            const linkActivateAccount = `${HOST_URL}/auth/activate-account/${actionToken.token}`;
             await emailService.sendMail(
                 email,
                 emailActions.USER_WAS_REGISTERED,
-                {userName: name}
+                {
+                    userName: name,
+                    link: linkActivateAccount
+                }
             );
 
             res
@@ -53,12 +59,19 @@ module.exports = {
 
     updateUser: async (req, res, next) => {
         try {
-            const {params: {userId}, body} = req;
+            const {body, foundUser: {_id}} = req;
 
             const updatedUser = await User.findByIdAndUpdate(
-                userId,
+                _id,
                 body,
                 {new: true, runValidators: true}
+            );
+            const {name, email} = updatedUser;
+
+            await emailService.sendMail(
+                email,
+                emailActions.USER_DATA_WAS_UPDATED,
+                {userName: name}
             );
 
             res
@@ -73,12 +86,12 @@ module.exports = {
         try {
             const {params: {userId}, foundUser: {name, email}} = req;
 
-            await User.deleteOne({user: userId});
-            Oauth.deleteOne({user: userId});
+            await User.deleteOne({_id: userId});
+            await Oauth.deleteMany({user: userId});
 
             await emailService.sendMail(
                 email,
-                emailActions.USER_WAS_DELETED,
+                emailActions.DELETED_ACCOUNT,
                 {userName: name}
             );
 

@@ -41,4 +41,3 @@ const sendMail = async (userMail, emailAction, context = {}) => {
 module.exports = {
     sendMail
 };
-

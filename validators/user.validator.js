@@ -7,11 +7,20 @@ const userValidator = Joi.object({
     name: Joi.string()
         .alphanum()
         .min(2)
-        .max(30)
+        .max(20)
         .trim()
         .required(),
 
+    secondName: Joi.string()
+        .alphanum()
+        .max(20)
+        .trim()
+        .default(''),
+
     age: Joi.number(),
+
+    is_active: Joi.boolean()
+        .default(false),
 
     email: Joi.string()
         .trim()

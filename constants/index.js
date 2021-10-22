@@ -1,4 +1,5 @@
 module.exports = {
+    actionTokenTypes: require('./action-token-type.enum'),
     emailActions: require('./email-action.enum'),
     errorMessages: require('./error-message.enum'),
     errorStatuses: require('./error-status.enum'),
