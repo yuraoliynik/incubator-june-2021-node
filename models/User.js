@@ -2,7 +2,7 @@ const {model, Schema} = require('mongoose');
 
 const {modelNames, userStatuses, userRoles} = require('../constants');
 const {passwordService} = require('../services');
-const userUtil = require('../util/user.util');
+const {userUtil} = require('../util');
 
 const userSchema = new Schema({
     name: {
@@ -65,18 +65,28 @@ userSchema.virtual('fullName').get(function() {
     return `${this.name} ${this.secondName}`;
 });
 
-userSchema.methods = {
-    normalize() {
-        return userUtil.userNormalizator(this.toObject());
-    }
-};
+userSchema.pre('findOne', function(){
+    this.lean();
+});
+
+userSchema.pre('find', function(){
+    this.lean();
+});
+
+userSchema.pre('deleteOne', function(){
+    this.lean();
+});
+
+userSchema.pre('deleteMany', function(){
+    this.lean();
+});
 
 module.exports = userSchema.statics = {
     activate(userId) {
         return this.updateOne(
             {_id: userId},
             {status: userStatuses.ACTIVE}
-        );
+        ).lean();
     },
 
     async createUserWithHashPassword(userObject) {
@@ -88,13 +98,25 @@ module.exports = userSchema.statics = {
         });
     },
 
+    normalize(userObjectToNormalize) {
+        return userUtil.userNormalizator(userObjectToNormalize);
+    },
+
+    updateData(userId, userDataObject) {
+        return this.findByIdAndUpdate(
+            userId,
+            userDataObject,
+            {new: true, runValidators: true}
+        ).lean();
+    },
+
     async updatePassword(userId, newPassword) {
         const hashedPassword = await passwordService.hash(newPassword);
 
         return this.updateOne(
             {_id: userId},
             {password: hashedPassword}
-        );
+        ).lean();
     }
 };
 

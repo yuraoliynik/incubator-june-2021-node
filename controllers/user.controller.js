@@ -30,7 +30,7 @@ module.exports = {
 
             const createdUser = await User.createUserWithHashPassword(body);
 
-            const normedUser = createdUser.normalize();
+            const normedUser = User.normalize(createdUser);
             const {_id, name, email} = normedUser;
 
             const actionToken = jwtService.generateTokenAction(actionTokenTypes.ACTIVATE_ACCOUNT);
@@ -61,11 +61,7 @@ module.exports = {
         try {
             const {body, foundUser: {_id}} = req;
 
-            const updatedUser = await User.findByIdAndUpdate(
-                _id,
-                body,
-                {new: true, runValidators: true}
-            );
+            const updatedUser = await User.updateData(_id, body);
             const {name, email} = updatedUser;
 
             await emailService.sendMail(

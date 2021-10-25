@@ -49,7 +49,6 @@ module.exports = {
         }
     },
 
-
     isPasswordMatched: (findKey = 0) => async (req, res, next) => {
         try {
             const {body, foundUser} = req;

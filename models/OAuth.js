@@ -27,7 +27,15 @@ const oAuthSchema = new Schema({
 });
 
 oAuthSchema.pre('findOne', function(){
-    this.populate('user');
+    this.populate({path: 'user', options: {lean: true}}).lean();
+});
+
+oAuthSchema.pre('deleteOne', function(){
+    this.lean();
+});
+
+oAuthSchema.pre('deleteMany', function(){
+    this.lean();
 });
 
 module.exports = model(modelNames.O_AUTH, oAuthSchema);

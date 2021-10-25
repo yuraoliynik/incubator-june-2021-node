@@ -38,7 +38,7 @@ module.exports = {
                 {userName: name}
             );
 
-            const normedUser = foundUser.normalize();
+            const normedUser = User.normalize(foundUser);
 
             res.json({
                 user: normedUser,

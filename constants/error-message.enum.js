@@ -1,5 +1,6 @@
 module.exports = {
     ACCESS_DENIED: 'Access denied',
+    CORS_IS_NOT_ALLOWED: 'CORS is not allowed',
     INVALID_TOKEN: 'Invalid token',
     USER_EMAIL_ALREADY_EXISTS: 'User email already exists',
     USER_ID_DOESNT_EXIST: 'User id doesn\'t exist',
