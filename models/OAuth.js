@@ -26,15 +26,15 @@ const oAuthSchema = new Schema({
     toJSON: {virtuals: true}
 });
 
-oAuthSchema.pre('findOne', function(){
+oAuthSchema.pre('findOne', function() {
     this.populate({path: 'user', options: {lean: true}}).lean();
 });
 
-oAuthSchema.pre('deleteOne', function(){
+oAuthSchema.pre('deleteOne', function() {
     this.lean();
 });
 
-oAuthSchema.pre('deleteMany', function(){
+oAuthSchema.pre('deleteMany', function() {
     this.lean();
 });
 

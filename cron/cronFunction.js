@@ -1,7 +1,7 @@
 const dayJs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 
-const {ActionToken, OAuth} = require('../models');
+const {ActionToken, Oauth} = require('../models');
 
 dayJs.extend(utc);
 
@@ -19,7 +19,7 @@ module.exports = {
     async deleteOldRefreshTokens() {
         const previousMonth = dayJs.utc().subtract(1, 'month');
 
-        const deleteInfo = await OAuth.deleteMany({
+        const deleteInfo = await Oauth.deleteMany({
             createdAt: {$lt: previousMonth}
         });
 

@@ -26,15 +26,15 @@ const actionTokenSchema = new Schema({
     toJSON: {virtuals: true}
 });
 
-actionTokenSchema.pre('findOne', function(){
+actionTokenSchema.pre('findOne', function() {
     this.populate({path: 'user', options: {lean: true}}).lean();
 });
 
-actionTokenSchema.pre('deleteOne', function(){
+actionTokenSchema.pre('deleteOne', function() {
     this.lean();
 });
 
-actionTokenSchema.pre('deleteMany', function(){
+actionTokenSchema.pre('deleteMany', function() {
     this.lean();
 });
 

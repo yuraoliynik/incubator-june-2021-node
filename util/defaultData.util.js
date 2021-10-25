@@ -1,10 +1,10 @@
-const {userRoles, userStatuses} = require('../constants');
+const {userStatuses, userRoles} = require('../constants');
 const {User} = require('../models');
 
 module.exports = async () => {
-    const user = await User.findOne({role: userRoles.ADMIN});
+    const admin = User.findOne({role: userRoles.ADMIN});
 
-    if (!user) {
+    if (!admin) {
         await User.createUserWithHashPassword({
             name: 'Yura',
             secondName: '',

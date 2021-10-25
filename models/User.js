@@ -65,19 +65,19 @@ userSchema.virtual('fullName').get(function() {
     return `${this.name} ${this.secondName}`;
 });
 
-userSchema.pre('findOne', function(){
+userSchema.pre('findOne', function() {
     this.lean();
 });
 
-userSchema.pre('find', function(){
+userSchema.pre('find', function() {
     this.lean();
 });
 
-userSchema.pre('deleteOne', function(){
+userSchema.pre('deleteOne', function() {
     this.lean();
 });
 
-userSchema.pre('deleteMany', function(){
+userSchema.pre('deleteMany', function() {
     this.lean();
 });
 

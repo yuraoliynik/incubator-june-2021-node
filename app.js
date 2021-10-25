@@ -16,7 +16,7 @@ const {errorMessages, errorStatuses} = require('./constants');
 const startCron = require('./cron');
 const ErrorHandler = require('./errors/ErrorHandler');
 const {authRouter, userRouter} = require('./routers');
-const {defaultDataUtil: insertDefaultData} = require('./util');
+const insertDefaultData = require('./util/defaultData.util');
 
 const app = express();
 
