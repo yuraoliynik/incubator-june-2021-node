@@ -2,7 +2,8 @@ const {
     errorMessages,
     errorStatuses,
     headerNames,
-    tokenTypes
+    tokenTypes,
+    userStatuses
 } = require('../constants');
 const {ActionToken, Oauth, User} = require('../models');
 const {jwtService, passwordService} = require('../services');
@@ -10,9 +11,9 @@ const {jwtService, passwordService} = require('../services');
 module.exports = {
     isUserActivated: (req, res, next) => {
         try {
-            const {foundUser: {isActive}} = req;
+            const {foundUser: {status}} = req;
 
-            if (!isActive) {
+            if (status !== userStatuses.ACTIVE) {
                 return next({
                     message: errorMessages.USER_IS_NOT_ACTIVATED,
                     status: errorStatuses.code_403

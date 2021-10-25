@@ -7,5 +7,6 @@ module.exports = {
     modelNames: require('./model-name.enum'),
     regexp: require('./regexp'),
     tokenTypes: require('./token-type.enum'),
+    userStatuses: require('./user-status.enum'),
     userRoles: require('./user-role.enum')
 };

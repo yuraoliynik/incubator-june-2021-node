@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const {regexp} = require('../constants');
-const {userRoles} = require('../constants');
+const {userStatuses, userRoles} = require('../constants');
 
 const userValidator = Joi.object({
     name: Joi.string()
@@ -19,8 +19,8 @@ const userValidator = Joi.object({
 
     age: Joi.number(),
 
-    is_active: Joi.boolean()
-        .default(false),
+    status: Joi.string()
+        .allow(...Object.values(userStatuses)),
 
     email: Joi.string()
         .trim()

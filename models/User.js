@@ -1,6 +1,6 @@
 const {model, Schema} = require('mongoose');
 
-const {modelNames, userRoles} = require('../constants');
+const {modelNames, userStatuses, userRoles} = require('../constants');
 const {passwordService} = require('../services');
 const userUtil = require('../util/user.util');
 
@@ -21,10 +21,11 @@ const userSchema = new Schema({
         type: Number
     },
 
-    isActive: {
-        type: Boolean,
+    status: {
+        type: String,
         required: true,
-        default: false
+        enum: Object.values(userStatuses),
+        default: userStatuses.NOT_ACTIVE
     },
 
     email: {
@@ -44,6 +45,7 @@ const userSchema = new Schema({
 
     role: {
         type: String,
+        required: true,
         default: userRoles.USER,
         enum: Object.values(userRoles)
     }
@@ -69,11 +71,11 @@ userSchema.methods = {
     }
 };
 
-userSchema.statics = {
+module.exports = userSchema.statics = {
     activate(userId) {
         return this.updateOne(
             {_id: userId},
-            {isActive: true}
+            {status: userStatuses.ACTIVE}
         );
     },
 
