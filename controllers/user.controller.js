@@ -1,12 +1,14 @@
 const {HOST_URL} = require('../configs/config');
 const {actionTokenTypes, emailActions, errorStatuses} = require('../constants');
 const {ActionToken, Oauth, User} = require('../models');
-const {emailService, jwtService} = require('../services');
+const {emailService, jwtService, userService} = require('../services');
 
 module.exports = {
     getUsers: async (req, res, next) => {
         try {
-            const foundUsers = await User.find({});
+            const {query} = req;
+
+            const foundUsers = await userService.getAllUsers(query);
 
             res.json(foundUsers);
         } catch (err) {

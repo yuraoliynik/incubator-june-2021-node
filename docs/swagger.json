@@ -1,0 +1,651 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the documentation of my first Node project.",
+    "version": "1.0",
+    "title": "My NodeJS project",
+    "contact": {
+      "name": "Yura Oliynyk",
+      "email": "yuraoliynyk.20@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Authorization and operation of access keys"
+    },
+    {
+      "name": "users",
+      "description": "Information and operations about user"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log in",
+        "description": "",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "User email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "User password",
+            "required": true,
+            "minLength": 6,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OAuth"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/activate-account": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Activate user account",
+        "description": "Activate user account by link on user email",
+        "operationId": "activateAccount",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `action token` for activated account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "User email",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "put": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Change user password",
+        "description": "",
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `accesses token`",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "User old password",
+            "required": true,
+            "minLength": 6,
+            "type": "string"
+          },
+          {
+            "name": "newPassword",
+            "in": "formData",
+            "description": "User new password",
+            "required": true,
+            "minLength": 6,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User forgot password",
+        "description": "Sent email with link for change user password",
+        "operationId": "forgotPassword",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "User email",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "User change password",
+        "description": "User change password by link in email",
+        "operationId": "changePassword",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `action token` for change password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newPassword",
+            "in": "formData",
+            "description": "User new password",
+            "required": true,
+            "minLength": 6,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Log out",
+        "description": "",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `accesses token`",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "205": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Generate a new pair of tokens",
+        "description": "Generate new accesses and refresh tokens",
+        "operationId": "refresh",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `refresh token`",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/OAuth"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get information about registered users",
+        "description": "",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The `access token` user administrator or manager",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "description": "Count users on a page",
+            "required": false,
+            "default": 20,
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Number of page with users information",
+            "required": false,
+            "default": 1,
+            "type": "number"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Name of user property for sort",
+            "required": false,
+            "default": "createdAt",
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort in order ascending or descending",
+            "required": false,
+            "default": "asc",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Filter by the initial letters of the username",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "age.gte",
+            "in": "query",
+            "description": "Filter by users are older than or equal age",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "age.lte",
+            "in": "query",
+            "description": "Filter by users are younger than or equal age",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "Filter by user roles",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Create new account",
+        "description": "Create new user account with status `not_active`",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "User first name",
+            "required": true,
+            "minLength": 2,
+            "maxLength": 20,
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "formData",
+            "description": "User second name",
+            "required": false,
+            "maxLength": 20,
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "in": "formData",
+            "description": "User age",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "User email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "User password",
+            "required": true,
+            "minLength": 6,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get user information by ID",
+        "description": "",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete user account by ID",
+        "description": "",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user whose account you want to delete",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The `access token` user administrator",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Update user data by ID",
+        "description": "",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user whose data you want to update",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The user's `access token`",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "User first name",
+            "required": false,
+            "minLength": 2,
+            "maxLength": 20,
+            "type": "string"
+          },
+          {
+            "name": "secondName",
+            "in": "formData",
+            "description": "User second name",
+            "required": false,
+            "maxLength": 20,
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "in": "formData",
+            "description": "User age",
+            "required": false,
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "OAuth": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "description": "User access token",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzUzqwertyAsImV4c123456zNTM0NTgyMH0.Hbunnpj3zCbpl4PLwoz3r0k670tr4M889wIRBNaZKsA"
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "User refresh token",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzUzqwertyAsImV4c123456zNTM0NTgyMH0.Hbunnpj3zCbpl4PLwoz3r0k670tr4M889wIRBNaZKsA"
+        },
+        "user": {
+          "type": "object",
+          "description": "User information",
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "MongoDB ObjectId",
+          "example": "6176e531828064e0a5c769c8"
+        },
+        "name": {
+          "type": "string",
+          "description": "User name",
+          "example": "Jack"
+        },
+        "secondName": {
+          "type": "string",
+          "description": "User second name",
+          "example": "Stone"
+        },
+        "fullName": {
+          "type": "string",
+          "description": "User name and second name",
+          "example": "Jack Stone"
+        },
+        "age": {
+          "type": "number",
+          "description": "User age",
+          "example": "20"
+        },
+        "status": {
+          "type": "string",
+          "description": "User status",
+          "example": "not_active"
+        },
+        "email": {
+          "type": "string",
+          "description": "User email",
+          "example": "user_mail@email.com"
+        },
+        "role": {
+          "type": "string",
+          "description": "User role",
+          "example": "user"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "User create date",
+          "example": "2021-10-25T17:11:13.844Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "User last update date",
+          "example": "2021-10-25T17:11:13.844Z"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string",
+          "example": "Some error message"
+        }
+      }
+    }
+  }
+}

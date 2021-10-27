@@ -1,6 +1,10 @@
 const router = require('express').Router();
 
-const {userValidator, userPutValidator} = require('../validators');
+const {
+    queryGetAllUserValidator,
+    userValidator,
+    userPutValidator
+} = require('../validators');
 const {
     authMiddleware,
     roleMiddleware,
@@ -12,6 +16,7 @@ const {userController} = require('../controllers');
 
 router.get(
     '/',
+    validMiddleware.isQueryValid(queryGetAllUserValidator),
     authMiddleware.checkAccessToken,
     roleMiddleware.isUserRolesChecked([
         userRoles.ADMIN,

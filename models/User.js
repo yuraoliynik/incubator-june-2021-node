@@ -1,8 +1,8 @@
 const {model, Schema} = require('mongoose');
 
 const {modelNames, userStatuses, userRoles} = require('../constants');
-const {passwordService} = require('../services');
-const {userUtil} = require('../util');
+const passwordService = require('../services/password.service');
+const userUtil = require('../util/user.util');
 
 const userSchema = new Schema({
     name: {
@@ -18,7 +18,8 @@ const userSchema = new Schema({
     },
 
     age: {
-        type: Number
+        type: Number,
+        default: 0
     },
 
     status: {

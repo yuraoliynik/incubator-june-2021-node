@@ -10,7 +10,7 @@ module.exports = async () => {
             secondName: '',
             age: 0,
             status: userStatuses.ACTIVE,
-            email: 'yuraoliynyk.20@gmail.com',
+            email: 'some_email@mail.com',
             password: 'My_PassWord!20',
             role: userRoles.ADMIN
         });

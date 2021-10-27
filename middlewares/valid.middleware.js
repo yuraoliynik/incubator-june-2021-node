@@ -25,5 +25,24 @@ module.exports = {
         } catch (err) {
             next(err);
         }
+    },
+
+    isQueryValid: (validator) => (req, res, next) => {
+        try {
+            const {query} = req;
+
+            const {error} = validator.validate(query);
+
+            if (error) {
+                return next({
+                    message: error.details[0].message,
+                    status: errorStatuses.code_400
+                });
+            }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
     }
 };
