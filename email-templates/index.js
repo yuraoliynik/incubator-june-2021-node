@@ -31,6 +31,11 @@ module.exports = {
         subject: 'Logged in'
     },
 
+    [emailActions.USER_WAKE]: {
+        templateName: 'user-wake',
+        subject: 'Wake up!!!'
+    },
+
     [emailActions.USER_WAS_REGISTERED]: {
         templateName: 'user-was-registered',
         subject: 'Registered'

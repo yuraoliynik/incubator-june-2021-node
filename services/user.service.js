@@ -44,6 +44,7 @@ module.exports = {
             .find(findObject)
             .sort({[sortBy]: orderBy})
             .limit(+perPage)
-            .skip((page - 1) * perPage);
+            .skip((page - 1) * perPage)
+            .lean();
     }
 };

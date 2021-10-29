@@ -71,10 +71,6 @@ userSchema.virtual('fullName').get(function() {
     return `${this.name} ${this.secondName}`;
 });
 
-userSchema.pre('find', function() {
-    this.lean();
-});
-
 userSchema.pre('findById', function() {
     this.lean();
 });
