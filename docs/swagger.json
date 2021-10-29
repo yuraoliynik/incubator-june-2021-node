@@ -179,7 +179,7 @@
         ],
         "summary": "User change password",
         "description": "User change password by link in email",
-        "operationId": "changePassword",
+        "operationId": "changeForgotPassword",
         "parameters": [
           {
             "name": "Authorization",
@@ -560,6 +560,91 @@
           }
         }
       }
+    },
+    "/users/{userId}/avatar": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Add a user avatar",
+        "description": "Add a user avatar after creating a user and activating an account",
+        "operationId": "addUserAvatar",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user whose avatar you want to add",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "User avatar image. The maximum image size is 2MB",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Change a user avatar",
+        "description": "Change a user avatar",
+        "operationId": "changeUserAvatar",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user whose avatar you want to change",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "User's `access token`",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "User avatar image. The maximum image size is 2MB",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "400": {
+            "description": "error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -595,6 +680,11 @@
           "type": "string",
           "description": "User name",
           "example": "Jack"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "User avatar image",
+          "example": "https://bucket.s3.amazonaws.com/users%5C617bcb163f9f0b4caca256b6%5CkNT1Hae9KtzDIHQ0u7dcV.jpg"
         },
         "secondName": {
           "type": "string",

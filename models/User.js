@@ -17,6 +17,11 @@ const userSchema = new Schema({
         trim: true
     },
 
+    avatar: {
+        type: String,
+        default: ''
+    },
+
     age: {
         type: Number,
         default: 0
@@ -66,11 +71,15 @@ userSchema.virtual('fullName').get(function() {
     return `${this.name} ${this.secondName}`;
 });
 
-userSchema.pre('findOne', function() {
+userSchema.pre('find', function() {
     this.lean();
 });
 
-userSchema.pre('find', function() {
+userSchema.pre('findById', function() {
+    this.lean();
+});
+
+userSchema.pre('findOne', function() {
     this.lean();
 });
 

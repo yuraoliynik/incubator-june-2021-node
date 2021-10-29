@@ -7,6 +7,7 @@ const {
 } = require('../validators');
 const {
     authMiddleware,
+    fileMiddleware,
     roleMiddleware,
     validMiddleware,
     userMiddleware
@@ -49,5 +50,23 @@ router.put(
     userMiddleware.isUserExist,
     userController.updateUser
 );
+
+router.post(
+    '/:userId/avatar',
+    fileMiddleware.checkUserAvatar,
+    userMiddleware.isUserExist,
+    authMiddleware.isUserActivated,
+    userMiddleware.uploadUserAvatar,
+    userController.updateUser
+);
+router.put(
+    '/:userId/avatar',
+    fileMiddleware.checkUserAvatar,
+    authMiddleware.checkAccessToken,
+    userMiddleware.isUserExist,
+    userMiddleware.uploadUserAvatar,
+    userController.updateUser
+);
+
 
 module.exports = router;

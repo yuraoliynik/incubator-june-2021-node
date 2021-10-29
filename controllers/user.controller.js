@@ -1,7 +1,15 @@
 const {HOST_URL} = require('../configs/config');
-const {actionTokenTypes, emailActions, errorStatuses} = require('../constants');
+const {
+    actionTokenTypes,
+    emailActions,
+    errorStatuses
+} = require('../constants');
 const {ActionToken, Oauth, User} = require('../models');
-const {emailService, jwtService, userService} = require('../services');
+const {
+    emailService,
+    jwtService,
+    userService
+} = require('../services');
 
 module.exports = {
     getUsers: async (req, res, next) => {

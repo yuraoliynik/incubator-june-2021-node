@@ -1,5 +1,10 @@
-const {errorMessages, errorStatuses} = require('../constants');
+const {
+    errorMessages,
+    errorStatuses,
+    itemTypes
+} = require('../constants');
 const {User} = require('../models');
+const {s3Service} = require('../services');
 
 module.exports = {
     isUserExist: async (req, res, next) => {
@@ -35,6 +40,27 @@ module.exports = {
                     status: errorStatuses.code_409
                 });
             }
+
+            next();
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    uploadUserAvatar: async (req, res, next) => {
+        try {
+            const {
+                files: {avatar},
+                foundUser: {_id}
+            } = req;
+
+            const uploadInfo = await s3Service.uploadImage(
+                avatar,
+                itemTypes.USERS,
+                _id.toString()
+            );
+
+            req.body = {avatar: uploadInfo.Location};
 
             next();
         } catch (err) {

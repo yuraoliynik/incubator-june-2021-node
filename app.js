@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -22,7 +23,9 @@ const insertDefaultData = require('./util/defaultData.util');
 
 const app = express();
 
-mongoose.connect(MONGO_CONNECT_URL);
+mongoose.connect(MONGO_CONNECT_URL).then(() => {
+    console.log('Mongo was connected successfully');
+});
 
 app.use(helmet());
 app.use(cors({origin: _configureCORS}));
@@ -37,6 +40,7 @@ if (NODE_ENV === 'dev') {
     app.use(morgan('dev'));
 }
 
+app.use(fileUpload({}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
